@@ -1,0 +1,14 @@
+{
+  "name": "@treemap/tiles",
+  "version": "0.1.0",
+  "private": true,
+  "description": "PMTiles build scripts for the TreeMap tree layer",
+  "type": "module",
+  "scripts": {
+    "export": "node export-trees.mjs",
+    "build": "bash build-tiles.sh"
+  },
+  "dependencies": {
+    "pg": "^8.13.0"
+  }
+}

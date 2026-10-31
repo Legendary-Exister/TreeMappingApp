@@ -1,0 +1,28 @@
+{
+  "name": "mobile",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@maplibre/maplibre-react-native": "^10.1.1",
+    "@treemap/api-client": "workspace:*",
+    "@treemap/types": "workspace:*",
+    "expo": "^52.0.37",
+    "expo-status-bar": "~2.0.1",
+    "react": "18.3.1",
+    "react-native": "0.76.7"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.9",
+    "@types/react": "~18.3.12",
+    "typescript": "^5.8.2"
+  }
+}

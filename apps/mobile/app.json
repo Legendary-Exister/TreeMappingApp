@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "TreeMap",
+    "slug": "treemap-mobile",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#2d8a4e"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "org.treemap.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#2d8a4e"
+      },
+      "package": "org.treemap.app"
+    },
+    "plugins": ["@maplibre/maplibre-react-native"]
+  }
+}

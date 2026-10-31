@@ -1,0 +1,32 @@
+[project]
+name = "treemap-ingest"
+version = "0.1.0"
+description = "Tree Mapping App Python 3.12 data pipelines for city registers and OpenStreetMap"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.10.0",
+    "pyyaml>=6.0.2",
+    "requests>=2.32.3",
+    "shapely>=2.0.6",
+    "geopandas>=1.0.1",
+    "psycopg2-binary>=2.9.10",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.4",
+    "pytest-asyncio>=0.25.3",
+    "ruff>=0.9.9",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ingest"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

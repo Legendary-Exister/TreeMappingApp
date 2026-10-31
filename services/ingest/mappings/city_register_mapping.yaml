@@ -1,0 +1,33 @@
+# Complete dataset_url, licence, and source column names from the selected Delhi
+# public-land tree register before running the importer.
+city: Delhi
+dataset_url: ""
+data_format: csv # geojson, csv, or shapefile (a zipped shapefile)
+source_crs: EPSG:4326
+licence: ""
+source_name: city_register
+status: unverified
+
+columns:
+  id: tree_id
+  scientific_name: scientific_name
+  trunk_measurement: trunk_circumference_cm
+  height_m: height_m
+  crown_diameter_m: crown_diameter_m
+  planted_year: planted_year
+  leaf_cycle: leaf_cycle
+  longitude: longitude
+  latitude: latitude
+
+public_land_filter:
+  column: land_type
+  accepted_values:
+    - public
+    - government
+    - municipal
+
+rules:
+  trunk_measurement_type: circumference # circumference or diameter
+  trunk_measurement_unit: cm # cm or m
+  max_circumference_m: 43.0
+  max_height_m: 116.0

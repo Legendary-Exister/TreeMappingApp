@@ -1,0 +1,6 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+  - 'scripts/tiles'
+allowBuilds:
+  esbuild: true

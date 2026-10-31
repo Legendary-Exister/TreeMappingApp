@@ -1,0 +1,92 @@
+name: Nightly Tiles Build
+
+on:
+  # Run every night at 02:00 UTC (off-peak for the Overpass API too)
+  schedule:
+    - cron: '0 2 * * *'
+  # Allow manual trigger from the Actions UI or API
+  workflow_dispatch:
+    inputs:
+      max_size_mb:
+        description: 'Maximum PMTiles file size in MB (default: 50)'
+        required: false
+        default: '50'
+
+concurrency:
+  group: tiles-build
+  cancel-in-progress: true
+
+jobs:
+  build-tiles:
+    name: Export → tippecanoe → Upload
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      # -----------------------------------------------------------------------
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # -----------------------------------------------------------------------
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.15.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install workspace dependencies
+        run: pnpm install --frozen-lockfile --filter @treemap/tiles
+
+      # -----------------------------------------------------------------------
+      # tippecanoe is not in apt by default on ubuntu-latest; build from source
+      # or use the pre-built binary from a known release.
+      - name: Install tippecanoe
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            build-essential libsqlite3-dev zlib1g-dev
+
+          TIPPECANOE_VERSION="2.67.0"
+          curl -fsSL \
+            "https://github.com/felt/tippecanoe/archive/refs/tags/${TIPPECANOE_VERSION}.tar.gz" \
+            | tar -xz -C /tmp
+          make -C "/tmp/tippecanoe-${TIPPECANOE_VERSION}" -j"$(nproc)"
+          sudo install -m 755 "/tmp/tippecanoe-${TIPPECANOE_VERSION}/tippecanoe" /usr/local/bin/tippecanoe
+          tippecanoe --version
+
+      # -----------------------------------------------------------------------
+      - name: Install AWS CLI v2
+        run: |
+          curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o /tmp/awscliv2.zip
+          unzip -q /tmp/awscliv2.zip -d /tmp
+          sudo /tmp/aws/install --update
+          aws --version
+
+      # -----------------------------------------------------------------------
+      - name: Build PMTiles
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
+          STORAGE_ENDPOINT: ${{ secrets.STORAGE_ENDPOINT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION || 'us-east-1' }}
+          MAX_SIZE_MB: ${{ github.event.inputs.max_size_mb || '50' }}
+        run: pnpm tiles:build
+
+      # -----------------------------------------------------------------------
+      # Upload the PMTiles file as a workflow artifact so the build log and
+      # file are retained for 7 days even if storage upload succeeds.
+      - name: Archive PMTiles artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trees-pmtiles-${{ github.run_number }}
+          path: out/tiles/trees.pmtiles
+          retention-days: 7
+          if-no-files-found: warn
