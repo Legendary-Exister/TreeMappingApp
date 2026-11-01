@@ -235,7 +235,7 @@ export default function Map() {
     mapRef.current = map;
 
     return () => {
-      MapLibreMap.removeProtocol('pmtiles');
+      maplibregl.removeProtocol('pmtiles');
       map.remove();
       mapRef.current = null;
     };
