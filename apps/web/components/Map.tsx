@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import {
+import maplibregl, {
   Map as MapLibreMap,
   NavigationControl,
   GeolocateControl,
@@ -93,7 +93,7 @@ export default function Map() {
     // pmtiles:// URLs without any remote tile server.
     // -------------------------------------------------------------------------
     const pmtilesProtocol = new Protocol();
-    MapLibreMap.addProtocol('pmtiles', pmtilesProtocol.tile);
+    maplibregl.addProtocol('pmtiles', pmtilesProtocol.tile);
 
     const map = new MapLibreMap({
       container: mapContainer.current,
