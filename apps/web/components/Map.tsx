@@ -34,7 +34,7 @@ const TREE_TILES_URL = process.env.NEXT_PUBLIC_TREE_TILES_URL
 // ---------------------------------------------------------------------------
 // Leaf cycle → colour mapping (matches DB enum)
 // ---------------------------------------------------------------------------
-const LEAF_CYCLE_COLOURS: Record<string, string> = {
+const LEAF_CYCLE_COLOURS: Record<'deciduous' | 'evergreen' | 'semi_evergreen' | 'unknown', string> = {
   deciduous: '#16a34a',      // green-600
   evergreen: '#0d9488',     // teal-600
   semi_evergreen: '#0891b2', // cyan-600
